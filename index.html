@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Мой маркетплейс</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <div class="logo">Buy-Sell</div>
+        <div class="search-container">
+            <input type="text" id="search-input" placeholder="Поиск игр или предметов...">
+        </div>
+        <div class="wallet-display" id="wallet-display" style="display:none;">
+            💰 <span id="wallet-balance">0</span> руб.
+        </div>
+        <div class="profile-container">
+            <div class="profile-circle" onclick="toggleMenu()">👤</div>
+            <div class="dropdown-menu" id="dropdown-menu">
+                <a onclick="openAuthForm('login')" id="login-btn">Войти</a>
+                <a onclick="openAuthForm('register')" id="register-btn">Создать аккаунт</a>
+                <a onclick="goToProfile()" id="profile-btn" style="display:none;">Мой профиль</a>
+                <a onclick="openOrdersOverlay()" id="orders-btn" style="display:none;">Мои сделки</a>
+                <a onclick="openMessagesOverlay()" id="messages-btn" style="display:none;">Сообщения</a>
+                <a onclick="openDepositForm()" id="deposit-btn" style="display:none;">Пополнить баланс</a>
+                <a onclick="goToSettings()" id="settings-btn" style="display:none;">Настройки</a>
+                <a onclick="logout()" id="logout-btn" style="display:none;">Выйти</a>
+            </div>
+        </div>
+    </header>
+
+    <div id="auth-overlay" style="display:none;">
+        <div id="auth-form">
+            <h2 id="auth-title">Вход</h2>
+            <input type="text" id="auth-username" placeholder="Имя пользователя">
+            <input type="password" id="auth-password" placeholder="Пароль">
+            <p id="auth-error" style="color:#e74c3c; display:none;"></p>
+            <button onclick="submitAuth()" id="auth-submit-btn">Войти</button>
+            <button onclick="closeAuthForm()">Отмена</button>
+        </div>
+    </div>
+
+    <div id="orders-overlay" style="display:none;">
+        <div id="orders-panel">
+            <h2>Мои сделки</h2>
+            <button onclick="closeOrdersOverlay()" id="close-orders-btn">Закрыть</button>
+            <div id="orders-list"></div>
+        </div>
+    </div>
+
+    <div id="deposit-overlay" style="display:none;">
+        <div id="deposit-form">
+            <h2>Пополнить баланс</h2>
+            <input type="number" id="deposit-amount" placeholder="Сумма">
+            <button onclick="submitDeposit()">Пополнить</button>
+            <button onclick="closeDepositForm()">Отмена</button>
+        </div>
+    </div>
+
+    <div id="messages-overlay" style="display:none;">
+        <div id="messages-panel">
+            <div id="conversations-list-panel">
+                <h2>Сообщения</h2>
+                <button onclick="closeMessagesOverlay()" id="close-messages-btn">Закрыть</button>
+                <div id="conversations-list"></div>
+            </div>
+            <div id="chat-panel">
+                <div id="chat-header">Выбери переписку</div>
+                <div id="chat-messages"></div>
+                <div id="chat-input-row" style="display:none;">
+                    <input type="text" id="chat-input" placeholder="Написать сообщение...">
+                    <button onclick="sendChatMessage()">Отправить</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <main>
+        <button id="add-item-btn" onclick="toggleAddForm()">+ Добавить товар</button>
+        
+        <div id="add-item-form" style="display:none;">
+            <input type="text" id="new-item-name" placeholder="Название товара">
+            <input type="text" id="new-item-game" placeholder="Игра">
+            <input type="number" id="new-item-price" placeholder="Цена">
+            <button onclick="submitNewItem()">Опубликовать</button>
+            <button onclick="toggleAddForm()">Отмена</button>
+        </div>
+
+        <div id="items-container"></div>
+    </main>
+
+    <script src="script.js"></script>
+</body>
+</html>
