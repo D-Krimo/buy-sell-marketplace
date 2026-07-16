@@ -1,3 +1,5 @@
+const API_URL = 'https://buy-sell-marketplace-kjz1.onrender.com';
+
 let items = [];
 let isLoggedIn = false;
 let currentUsername = "";
@@ -57,7 +59,7 @@ function filterItems() {
 }
 
 function loadItems() {
-    fetch('http://localhost:3000/api/items')
+    fetch(`${API_URL}/api/items`)
         .then(response => response.json())
         .then(data => {
             items = data;
@@ -108,7 +110,7 @@ function submitAuth() {
 
     const endpoint = authMode === "login" ? "/api/login" : "/api/register";
 
-    fetch(`http://localhost:3000${endpoint}`, {
+    fetch(`${API_URL}${endpoint}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ username, password })
@@ -186,7 +188,7 @@ function submitNewItem() {
         return;
     }
 
-    fetch('http://localhost:3000/api/items', {
+    fetch(`${API_URL}/api/items`, {
         method: 'POST',
         headers: authHeaders(),
         body: JSON.stringify({ name, game, price: parseInt(price) })
@@ -208,7 +210,7 @@ function submitNewItem() {
 function deleteItem(id) {
     if (!confirm("Точно удалить этот товар?")) return;
     
-    fetch(`http://localhost:3000/api/items/${id}`, {
+    fetch(`${API_URL}/api/items/${id}`, {
         method: 'DELETE',
         headers: authHeaders()
     })
@@ -225,7 +227,7 @@ function deleteItem(id) {
 function buyItem(id) {
     if (!confirm("Купить этот товар?")) return;
 
-    fetch('http://localhost:3000/api/orders', {
+    fetch(`${API_URL}/api/orders`, {
         method: 'POST',
         headers: authHeaders(),
         body: JSON.stringify({ item_id: id })
@@ -247,7 +249,7 @@ function buyItem(id) {
 }
 
 function refreshBalance() {
-    fetch(`http://localhost:3000/api/wallet/${currentUsername}`, {
+    fetch(`${API_URL}/api/wallet/${currentUsername}`, {
         headers: authHeaders()
     })
         .then(response => response.json())
@@ -276,7 +278,7 @@ function submitDeposit() {
         return;
     }
 
-    fetch('http://localhost:3000/api/payment/create', {
+    fetch(`${API_URL}/api/payment/create`, {
         method: 'POST',
         headers: authHeaders(),
         body: JSON.stringify({ amount })
@@ -288,7 +290,7 @@ function submitDeposit() {
             return;
         }
         if (confirm(`Тестовая оплата: пополнить баланс на ${amount} руб.?\n(В будущем здесь откроется настоящая страница оплаты)`)) {
-            return fetch('http://localhost:3000/api/payment/confirm', {
+            return fetch(`${API_URL}/api/payment/confirm`, {
                 method: 'POST',
                 headers: authHeaders(),
                 body: JSON.stringify({ payment_id: data.payment_id, amount })
@@ -319,7 +321,7 @@ function closeOrdersOverlay() {
 }
 
 function loadOrders() {
-    fetch(`http://localhost:3000/api/orders/${currentUsername}`, {
+    fetch(`${API_URL}/api/orders/${currentUsername}`, {
         headers: authHeaders()
     })
         .then(response => response.json())
@@ -374,7 +376,7 @@ function renderOrders(orders) {
 }
 
 function updateOrderStatus(orderId, newStatus) {
-    fetch(`http://localhost:3000/api/orders/${orderId}/status`, {
+    fetch(`${API_URL}/api/orders/${orderId}/status`, {
         method: 'PUT',
         headers: authHeaders(),
         body: JSON.stringify({ status: newStatus })
@@ -403,7 +405,7 @@ function closeMessagesOverlay() {
 }
 
 function loadConversations() {
-    fetch(`http://localhost:3000/api/conversations/${currentUsername}`, {
+    fetch(`${API_URL}/api/conversations/${currentUsername}`, {
         headers: authHeaders()
     })
         .then(response => response.json())
@@ -452,7 +454,7 @@ function openChatWith(partner) {
 
 function loadChatMessages() {
     if (!currentChatPartner) return;
-    fetch(`http://localhost:3000/api/messages/${currentUsername}/${currentChatPartner}`, {
+    fetch(`${API_URL}/api/messages/${currentUsername}/${currentChatPartner}`, {
         headers: authHeaders()
     })
         .then(response => response.json())
@@ -482,7 +484,7 @@ function sendChatMessage() {
 
     if (!content || !currentChatPartner) return;
 
-    fetch('http://localhost:3000/api/messages', {
+    fetch(`${API_URL}/api/messages`, {
         method: 'POST',
         headers: authHeaders(),
         body: JSON.stringify({ receiver: currentChatPartner, content })
