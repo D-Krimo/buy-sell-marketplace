@@ -114,6 +114,13 @@ function authenticateToken(req, res, next) {
     });
 }
 
+function requireAdmin(req, res, next) {
+    if (req.user.username !== process.env.ADMIN_USERNAME) {
+        return res.status(403).json({ error: 'Доступ только для администратора' });
+    }
+    next();
+}
+
 app.get('/api/items', async (req, res) => {
     try {
         const result = await pool.query('SELECT * FROM items WHERE sold = 0');
