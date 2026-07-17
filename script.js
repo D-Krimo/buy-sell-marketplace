@@ -17,6 +17,29 @@ function authHeaders() {
     };
 }
 
+function saveSession() {
+    localStorage.setItem('authToken', authToken);
+    localStorage.setItem('currentUsername', currentUsername);
+}
+
+function clearSession() {
+    localStorage.removeItem('authToken');
+    localStorage.removeItem('currentUsername');
+}
+
+function restoreSession() {
+    const token = localStorage.getItem('authToken');
+    const username = localStorage.getItem('currentUsername');
+    if (token && username) {
+        authToken = token;
+        currentUsername = username;
+        isLoggedIn = true;
+        updateProfileMenu();
+        refreshBalance();
+        loadItems();
+    }
+}
+
 function toggleMenu() {
     const menu = document.getElementById("dropdown-menu");
     menu.classList.toggle("active");
@@ -73,6 +96,7 @@ function loadItems() {
 }
 
 loadItems();
+restoreSession();
 
 document.getElementById("search-input").addEventListener("input", filterItems);
 
@@ -126,6 +150,7 @@ function submitAuth() {
             currentUsername = data.username;
             currentBalance = data.balance;
             authToken = data.token;
+            saveSession();
             updateProfileMenu();
             closeAuthForm();
             loadItems();
@@ -143,6 +168,7 @@ function logout() {
     currentUsername = "";
     currentBalance = 0;
     authToken = "";
+    clearSession();
     stopChatPolling();
     updateProfileMenu();
     loadItems();
@@ -175,6 +201,8 @@ function toggleAddForm() {
 }
 
 function submitNewItem() {
+    if (isSubmittingItem) return;
+
     const name = document.getElementById("new-item-name").value;
     const game = document.getElementById("new-item-game").value;
     const price = document.getElementById("new-item-price").value;
@@ -188,6 +216,8 @@ function submitNewItem() {
         alert("Нужно войти в аккаунт, чтобы добавить товар");
         return;
     }
+
+    isSubmittingItem = true;
 
     fetch(`${API_URL}/api/items`, {
         method: 'POST',
@@ -205,6 +235,9 @@ function submitNewItem() {
     .catch(error => {
         console.error('Ошибка добавления товара:', error);
         alert("Не удалось добавить товар. Проверь, запущен ли сервер.");
+    })
+    .finally(() => {
+        isSubmittingItem = false;
     });
 }
 
