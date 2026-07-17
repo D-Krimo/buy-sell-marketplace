@@ -1,5 +1,6 @@
 const API_URL = 'https://buy-sell-marketplace-kjz1.onrender.com';
 
+let isSubmittingItem = false;
 let items = [];
 let isLoggedIn = false;
 let currentUsername = "";
