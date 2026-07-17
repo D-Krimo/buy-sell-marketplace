@@ -352,6 +352,37 @@ app.put('/api/orders/:id/status', authenticateToken, async (req, res) => {
     }
 });
 
+app.delete('/api/orders/:id', authenticateToken, requireAdmin, async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { action } = req.body;
+
+        const orderResult = await pool.query('SELECT * FROM orders WHERE id = $1', [id]);
+        const order = orderResult.rows[0];
+
+        if (!order) {
+            return res.status(404).json({ error: 'Сделка не найдена' });
+        }
+
+        if (action === 'refund') {
+            await pool.query('UPDATE users SET balance = balance + $1 WHERE username = $2', [order.price, order.buyer]);
+
+            if (order.status === 'received') {
+                const payout = order.price - order.commission;
+                await pool.query('UPDATE users SET balance = balance - $1 WHERE username = $2', [payout, order.seller]);
+            }
+
+            await pool.query('UPDATE items SET sold = 0 WHERE id = $1', [order.item_id]);
+        }
+
+        await pool.query('DELETE FROM orders WHERE id = $1', [id]);
+        res.json({ success: true, action: action || 'delete' });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Ошибка сервера' });
+    }
+});
+
 app.post('/api/messages', authenticateToken, async (req, res) => {
     try {
         const { receiver, content } = req.body;
