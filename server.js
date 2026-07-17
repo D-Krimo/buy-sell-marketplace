@@ -204,7 +204,8 @@ app.post('/api/register', authLimiter, async (req, res) => {
         );
 
         const token = jwt.sign({ username }, JWT_SECRET, { expiresIn: '7d' });
-        res.json({ success: true, username, balance: 0, token });
+        const isAdmin = username === process.env.ADMIN_USERNAME;
+        res.json({ success: true, username, balance: 0, token, isAdmin });
     } catch (error) {
         console.error(error);
         res.status(500).json({ error: 'Ошибка сервера' });
@@ -228,7 +229,8 @@ app.post('/api/login', authLimiter, async (req, res) => {
         }
 
         const token = jwt.sign({ username: user.username }, JWT_SECRET, { expiresIn: '7d' });
-        res.json({ success: true, username: user.username, balance: user.balance, token });
+        const isAdmin = user.username === process.env.ADMIN_USERNAME;
+        res.json({ success: true, username: user.username, balance: user.balance, token, isAdmin });
     } catch (error) {
         console.error(error);
         res.status(500).json({ error: 'Ошибка сервера' });
