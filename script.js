@@ -1,5 +1,6 @@
 const API_URL = 'https://buy-sell-marketplace-kjz1.onrender.com';
 
+let isAdmin = false;
 let isSubmittingItem = false;
 let items = [];
 let isLoggedIn = false;
@@ -20,6 +21,11 @@ function authHeaders() {
 function saveSession() {
     localStorage.setItem('authToken', authToken);
     localStorage.setItem('currentUsername', currentUsername);
+    function saveSession() {
+    localStorage.setItem('authToken', authToken);
+    localStorage.setItem('currentUsername', currentUsername);
+    localStorage.setItem('isAdmin', isAdmin ? '1' : '0');
+}
 }
 
 function clearSession() {
@@ -34,6 +40,7 @@ function restoreSession() {
         authToken = token;
         currentUsername = username;
         isLoggedIn = true;
+        isAdmin = localStorage.getItem('isAdmin') === '1';
         updateProfileMenu();
         refreshBalance();
         loadItems();
@@ -150,6 +157,7 @@ function submitAuth() {
             currentUsername = data.username;
             currentBalance = data.balance;
             authToken = data.token;
+            isAdmin = data.isAdmin || false;
             saveSession();
             updateProfileMenu();
             closeAuthForm();
@@ -394,6 +402,16 @@ function renderOrders(orders) {
         }
         if (isBuyer && order.status === "shipped") {
             actionButton = `<button class="order-action-btn" onclick="updateOrderStatus(${order.id}, 'received')">Подтвердить получение</button>`;
+        }
+        let adminButtons = "";
+        if (isAdmin) {
+            adminButtons = `
+                <button class="admin-delete-btn" onclick="adminDeleteOrder(${order.id}, 'delete')">🗑 Удалить (без возврата)</button>
+                <button class="admin-delete-btn" onclick="adminDeleteOrder(${order.id}, 'refund')">🗑 Удалить и вернуть деньги</button>
+            `;
+            ${actionButton}
+            ${adminButtons}
+        `;
         }
 
         const card = document.createElement("div");
