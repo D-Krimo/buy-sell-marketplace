@@ -444,6 +444,33 @@ function updateOrderStatus(orderId, newStatus) {
     });
 }
 
+function adminDeleteOrder(orderId, action) {
+    const confirmText = action === 'refund' 
+        ? "Удалить сделку и вернуть деньги покупателю?" 
+        : "Удалить сделку без возврата денег?";
+    
+    if (!confirm(confirmText)) return;
+
+    fetch(`${API_URL}/api/orders/${orderId}`, {
+        method: 'DELETE',
+        headers: authHeaders(),
+        body: JSON.stringify({ action })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.error) {
+            alert(data.error);
+        } else {
+            alert("Сделка удалена");
+            loadOrders();
+        }
+    })
+    .catch(error => {
+        console.error('Ошибка удаления сделки:', error);
+        alert("Не удалось удалить сделку");
+    });
+}
+
 function openMessagesOverlay() {
     document.getElementById("dropdown-menu").classList.remove("active");
     document.getElementById("messages-overlay").style.display = "flex";
