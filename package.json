@@ -12,14 +12,13 @@
   "type": "commonjs",
   "dependencies": {
     "bcrypt": "^6.0.0",
-    "better-sqlite3": "^12.11.1",
+    "pg": "^8.11.3",
     "dotenv": "^17.4.2",
     "express": "^5.2.1",
     "express-rate-limit": "^8.5.2",
     "jsonwebtoken": "^9.0.3"
   },
   "allowScripts": {
-    "better-sqlite3@12.11.1": true,
     "bcrypt@6.0.0": true
   }
 }
