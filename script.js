@@ -21,11 +21,7 @@ function authHeaders() {
 function saveSession() {
     localStorage.setItem('authToken', authToken);
     localStorage.setItem('currentUsername', currentUsername);
-    function saveSession() {
-    localStorage.setItem('authToken', authToken);
-    localStorage.setItem('currentUsername', currentUsername);
     localStorage.setItem('isAdmin', isAdmin ? '1' : '0');
-}
 }
 
 function clearSession() {
@@ -409,9 +405,6 @@ function renderOrders(orders) {
                 <button class="admin-delete-btn" onclick="adminDeleteOrder(${order.id}, 'delete')">🗑 Удалить (без возврата)</button>
                 <button class="admin-delete-btn" onclick="adminDeleteOrder(${order.id}, 'refund')">🗑 Удалить и вернуть деньги</button>
             `;
-            ${actionButton}
-            ${adminButtons}
-        `;
         }
 
         const card = document.createElement("div");
@@ -422,6 +415,7 @@ function renderOrders(orders) {
             ${!isBuyer ? `<p>К получению: ${payout} руб. (комиссия ${order.commission} руб.)</p>` : ''}
             <p>Статус: <span class="order-status ${order.status === 'received' ? 'received' : ''}">${statusLabels[order.status]}</span></p>
             ${actionButton}
+            ${adminButtons}
         `;
         container.appendChild(card);
     });
